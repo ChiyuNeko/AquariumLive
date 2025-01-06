@@ -1,0 +1,19 @@
+{
+    "characters": [
+        {
+            "characterName": "A",
+            "iconPath": "Icon/A",
+            "probability": 0.5
+        },
+        {
+            "characterName": "B",
+            "iconPath": "Icon/B",
+            "probability": 0.3
+        },
+        {
+            "characterName": "C",
+            "iconPath": "Icon/C",
+            "probability": 0.2
+        }
+    ]
+}

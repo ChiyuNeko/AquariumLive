@@ -6,6 +6,7 @@ using RhythmNamespace;
 using UnityEngine.UI;
 using Unity.VisualScripting;
 using UnityEngine.Events;
+using UnityEngine.SceneManagement;
 
 public class BlockManager : MonoBehaviour
 {
@@ -21,6 +22,7 @@ public class BlockManager : MonoBehaviour
     public Text ResaultScore;
     public bool Click{get; set;}
     public Button button;
+    public Animator animator;
     public UnityEvent OnFinish;
 
     private int currentBeat = 0;
@@ -63,6 +65,11 @@ public class BlockManager : MonoBehaviour
     public void DelayMinus()
     {
         delayStart -=0.1f;
+    }
+
+    public void ReStart()
+    {
+        SceneManager.LoadScene("Start");
     }
 
     private void LoadRhythmJson()
@@ -154,6 +161,7 @@ public class BlockManager : MonoBehaviour
                 if (audioSource && beatSound)
                 {
                     audioSource.PlayOneShot(beatSound);
+                    animator.Play("Character");
                 }
             }
 
