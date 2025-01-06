@@ -14,10 +14,13 @@ public class BlockManager : MonoBehaviour
     public AudioSource audioSource; // 音效播放源
 
     public string rhythmJsonPath = "Assets/Rhythms.json"; // 節奏文件路徑
-    public float delayStart = 1f; // 延遲開始時間（秒）
+    public float delayStart;// 延遲開始時間（秒）
+    public Text delayText;
     public float perfectWindow = 0.2f; // Perfect 判定的時間窗口（秒）
     public Text Score;
+    public Text ResaultScore;
     public bool Click{get; set;}
+    public Button button;
     public UnityEvent OnFinish;
 
     private int currentBeat = 0;
@@ -36,7 +39,7 @@ public class BlockManager : MonoBehaviour
         {
             currentRhythmIndex = 0;
             LoadCurrentRhythm();
-            StartCoroutine(PlayGame());
+            //StartCoroutine(PlayGame());
         }
         else
         {
@@ -45,11 +48,21 @@ public class BlockManager : MonoBehaviour
     }
     void Update()
     {
+        ResaultScore.text = Score.text;
+        delayText.text = $"延遲：{delayStart}";
         if(Click)
         {
             Debug.Log("Click");
         }
         Score.text = $"得分：{playerScore}";
+    }
+    public void DelayPlus()
+    {
+        delayStart +=0.1f;
+    }
+    public void DelayMinus()
+    {
+        delayStart -=0.1f;
     }
 
     private void LoadRhythmJson()
@@ -83,6 +96,11 @@ public class BlockManager : MonoBehaviour
         }
     }
 
+    public void _PlayGame()
+    {
+        StartCoroutine(PlayGame());
+    }
+
     private IEnumerator PlayGame()
     {
         yield return new WaitForSeconds(delayStart); // 延遲開始
@@ -91,10 +109,12 @@ public class BlockManager : MonoBehaviour
         {
             // 節奏示範階段
             isPlayerTurn = false;
+            button.interactable = false;
             yield return PlayCurrentRhythm();
 
             // 玩家模仿階段
             isPlayerTurn = true;
+            button.interactable = true;
             yield return WaitForPlayerInput();
 
             // 判定結果
