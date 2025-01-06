@@ -30,6 +30,7 @@ public class BlockManager : MonoBehaviour
     private int playerScore = 0; // 玩家得分
     void Start()
     {
+        //rhythmJsonPath = Path.Combine(Application.streamingAssetsPath,"Rhythms.json");
         LoadRhythmJson();
         if (rhythms.Count > 0)
         {
@@ -53,15 +54,17 @@ public class BlockManager : MonoBehaviour
 
     private void LoadRhythmJson()
     {
-        if (File.Exists(rhythmJsonPath))
+        TextAsset jsonFile = Resources.Load<TextAsset>("Rhythms"); // 不要包含文件副檔名
+        if (jsonFile != null)
         {
-            string json = File.ReadAllText(rhythmJsonPath);
+            string json = jsonFile.text;
             RhythmFile rhythmFile = JsonUtility.FromJson<RhythmFile>(json);
             rhythms = rhythmFile.rhythms;
+            Debug.Log("Rhythm JSON loaded from Resources.");
         }
         else
         {
-            Debug.LogError($"Rhythm JSON file not found at: {rhythmJsonPath}");
+            Debug.LogError("Rhythm JSON file not found in Resources.");
         }
     }
 

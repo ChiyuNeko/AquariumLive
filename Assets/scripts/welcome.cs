@@ -13,6 +13,6 @@ public class welcome : MonoBehaviour
 
     void gameStart()
     {
-        SceneManager.LoadScene("main");
+        SceneManager.LoadScene("SampleScene");
     }
 }
