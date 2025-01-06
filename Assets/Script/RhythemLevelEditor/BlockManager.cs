@@ -3,6 +3,9 @@ using System.Collections.Generic;
 using UnityEngine;
 using System.IO;
 using RhythmNamespace;
+using UnityEngine.UI;
+using Unity.VisualScripting;
+using UnityEngine.Events;
 
 public class BlockManager : MonoBehaviour
 {
@@ -13,6 +16,9 @@ public class BlockManager : MonoBehaviour
     public string rhythmJsonPath = "Assets/Rhythms.json"; // 節奏文件路徑
     public float delayStart = 1f; // 延遲開始時間（秒）
     public float perfectWindow = 0.2f; // Perfect 判定的時間窗口（秒）
+    public Text Score;
+    public bool Click{get; set;}
+    public UnityEvent OnFinish;
 
     private int currentBeat = 0;
     private float interval; // 每拍的時間間隔
@@ -22,7 +28,6 @@ public class BlockManager : MonoBehaviour
     private bool isPlayerTurn = false; // 判斷是否為玩家回合
     private float[] playerInputTimings; // 玩家每次輸入的時間
     private int playerScore = 0; // 玩家得分
-
     void Start()
     {
         LoadRhythmJson();
@@ -36,6 +41,14 @@ public class BlockManager : MonoBehaviour
         {
             Debug.LogError("No rhythms found in the JSON file.");
         }
+    }
+    void Update()
+    {
+        if(Click)
+        {
+            Debug.Log("Click");
+        }
+        Score.text = $"得分：{playerScore}";
     }
 
     private void LoadRhythmJson()
@@ -92,6 +105,7 @@ public class BlockManager : MonoBehaviour
             }
             else
             {
+                OnFinish?.Invoke();
                 Debug.Log("All rhythms completed!");
                 break;
             }
@@ -111,7 +125,7 @@ public class BlockManager : MonoBehaviour
             // 啟用當前節拍的方塊
             if (currentRhythm.pattern[currentBeat] == 1)
             {
-                blocks[currentBeat].GetComponent<Renderer>().material.color = Color.yellow;
+                blocks[currentBeat].GetComponent<RawImage>().color = Color.yellow;
 
                 // 播放音效
                 if (audioSource && beatSound)
@@ -137,7 +151,7 @@ public class BlockManager : MonoBehaviour
 
         while (elapsedTime < interval * 16)
         {
-            if (Input.GetKeyDown(KeyCode.Space))
+            if (Input.GetKeyDown(KeyCode.Space) || Click)
             {
                 // 記錄玩家輸入的時間
                 playerInputTimings[currentBeat] = elapsedTime;
@@ -145,10 +159,11 @@ public class BlockManager : MonoBehaviour
                 // 高亮玩家輸入的方塊
                 if (currentBeat < blocks.Length)
                 {
-                    blocks[currentBeat].GetComponent<Renderer>().material.color = Color.green;
+                    blocks[currentBeat].GetComponent<RawImage>().color = Color.green;
                 }
 
                 Debug.Log($"Player pressed at time {elapsedTime:F2}");
+                Click = false;
             }
 
             elapsedTime += Time.deltaTime;
@@ -189,7 +204,8 @@ public class BlockManager : MonoBehaviour
     {
         foreach (var block in blocks)
         {
-            block.GetComponent<Renderer>().material.color = Color.white;
+            block.GetComponent<RawImage>().color = Color.white;
         }
     }
+
 }
